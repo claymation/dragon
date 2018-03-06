@@ -6,7 +6,7 @@
 
 #include "stream.h"
 
-#include <string>
+#include <vector>
 
 namespace dragon {
 
@@ -23,7 +23,7 @@ public:
   /**
    * @brief Put a character back into the stream.
    */
-  void putback(char) override;
+  void putback(int) override;
 
 protected:
   /**
@@ -34,7 +34,7 @@ protected:
   Stream& source;
 
 private:
-  std::string buffer;
+  std::vector<int> buffer;
 };
 
 } // namespace dragon

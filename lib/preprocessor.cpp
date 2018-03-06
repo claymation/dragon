@@ -5,8 +5,8 @@
 
 namespace dragon {
 
-PreProcessor::PreProcessor(Stream& source)
-  : trigraph_filter(source)
+PreProcessor::PreProcessor(Stream& in)
+  : trigraph_filter(in)
   , source(trigraph_filter)
 {}
 
@@ -16,8 +16,8 @@ PreProcessor::getToken()
   return source.get();
 }
 
-PreProcessor::TrigraphFilter::TrigraphFilter(Stream& source)
-  : StreamFilter(source)
+PreProcessor::TrigraphFilter::TrigraphFilter(Stream& in)
+  : StreamFilter(in)
 {}
 
 int

@@ -13,13 +13,15 @@ namespace dragon {
 class IOStream : public Stream
 {
 public:
-  explicit IOStream(std::iostream& ios)
-    : ios(ios)
+  explicit IOStream(std::iostream& in)
+    : ios(in)
   {}
+
+  ~IOStream();
 
   int get() override { return ios.get(); }
 
-  void putback(char c) override { ios.putback(c); }
+  void putback(int c) override { if (c >= 0) ios.putback(static_cast<char>(c)); }
 
 private:
   std::iostream& ios;

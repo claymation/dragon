@@ -9,6 +9,8 @@ namespace dragon {
 class Stream
 {
 public:
+  virtual ~Stream();
+
   /**
    * @brief Get a character from the stream, or EOF.
    */
@@ -17,7 +19,7 @@ public:
   /**
    * @brief Put a character back into the stream.
    */
-  virtual void putback(char) = 0;
+  virtual void putback(int) = 0;
 };
 
 } // namespace dragon

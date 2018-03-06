@@ -5,8 +5,8 @@
 
 namespace dragon {
 
-StreamFilter::StreamFilter(Stream& source)
-  : source(source)
+StreamFilter::StreamFilter(Stream& in)
+  : source(in)
 {}
 
 int
@@ -22,7 +22,7 @@ StreamFilter::get()
 }
 
 void
-StreamFilter::putback(char c)
+StreamFilter::putback(int c)
 {
   buffer.push_back(c);
 }
