@@ -7,4 +7,13 @@ namespace dragon {
 
 IOStream::~IOStream() = default;
 
+void
+IOStream::putback(int c)
+{
+  ios.clear();
+  if (c >= 0) {
+    ios.putback(static_cast<char>(c));
+  }
+}
+
 } // namespace dragon

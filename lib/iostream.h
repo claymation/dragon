@@ -21,7 +21,7 @@ public:
 
   int get() override { return ios.get(); }
 
-  void putback(int c) override { if (c >= 0) ios.putback(static_cast<char>(c)); }
+  void putback(int) override;
 
 private:
   std::iostream& ios;

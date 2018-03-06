@@ -35,6 +35,9 @@ TEST_CASE("non-trigraph sequences are not replaced (§5.2.1.1)",
 {
   std::stringstream ss("???");
   IOStream ios(ss);
+  PreProcessor pp(ios);
 
-  REQUIRE(PreProcessor(ios).getToken() == '?');
+  REQUIRE(pp.getToken() == '?');
+  REQUIRE(pp.getToken() == '?');
+  REQUIRE(pp.getToken() == '?');
 }
