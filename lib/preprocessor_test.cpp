@@ -41,3 +41,14 @@ TEST_CASE("non-trigraph sequences are not replaced (§5.2.1.1)",
   REQUIRE(pp.getToken() == '?');
   REQUIRE(pp.getToken() == '?');
 }
+
+TEST_CASE("backslash immediately followed by new-line is deleted (§5.1.1.2)",
+          "[preprocessor]")
+{
+  std::stringstream ss("a\\\nb");
+  IOStream ios(ss);
+  PreProcessor pp(ios);
+
+  REQUIRE(pp.getToken() == 'a');
+  REQUIRE(pp.getToken() == 'b');
+}

@@ -7,7 +7,8 @@ namespace dragon {
 
 PreProcessor::PreProcessor(Stream& in)
   : trigraph_filter(in)
-  , source(trigraph_filter)
+  , continued_line_filter(trigraph_filter)
+  , source(continued_line_filter)
 {}
 
 int
@@ -58,6 +59,27 @@ PreProcessor::TrigraphFilter::filter()
       source.putback(c);
       source.putback('?');
       return '?';
+  }
+}
+
+PreProcessor::ContinuedLineFilter::ContinuedLineFilter(Stream& in)
+  : StreamFilter(in)
+{}
+
+int
+PreProcessor::ContinuedLineFilter::filter()
+{
+  while (true) {
+    int c = source.get();
+    if (c != '\\') {
+      return c;
+    }
+
+    c = source.get();
+    if (c != '\n') {
+      source.putback(c);
+      return '\\';
+    }
   }
 }
 

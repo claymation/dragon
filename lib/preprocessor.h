@@ -46,7 +46,16 @@ private:
     int filter() override;
   };
 
+  class ContinuedLineFilter : public StreamFilter
+  {
+  public:
+    ContinuedLineFilter(Stream&);
+
+    int filter() override;
+  };
+
   TrigraphFilter trigraph_filter;
+  ContinuedLineFilter continued_line_filter;
   Stream& source;
 };
 
