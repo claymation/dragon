@@ -30,3 +30,14 @@ TEST_CASE("tokenize identifiers (§6.4.2.1)", "[lexicalanalyzer]")
   REQUIRE(token.kind == PPToken::Kind::Identifier);
   REQUIRE(token.value == "foo_bar_42");
 }
+
+TEST_CASE("tokenize preprocessing numbers (§6.4.8)", "[lexicalanalyzer]")
+{
+  std::stringstream ss("6.02E23");
+  IOStream ios(ss);
+  LexicalAnalyzer lex(ios);
+  PPToken token = lex.getToken();
+
+  REQUIRE(token.kind == PPToken::Kind::PPNumber);
+  REQUIRE(token.value == "6.02E23");
+}

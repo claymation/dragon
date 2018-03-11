@@ -148,9 +148,32 @@ LexicalAnalyzer::getIdentifier(int c)
 }
 
 PPToken
-LexicalAnalyzer::getPPNumber(int)
+LexicalAnalyzer::getPPNumber(int c)
 {
-  return { PPToken::Kind::PPNumber, "" };
+  PPToken token{ PPToken::Kind::PPNumber, "" };
+
+  while (true) {
+    token.value += static_cast<char>(c);
+    c = source.get();
+    switch (c) {
+      case '+':
+      case '-': {
+        int back = std::tolower(token.value.back());
+        if (!(back == 'e' || back == 'p')) {
+          source.putback(c);
+          return token;
+        }
+        break;
+      }
+
+      default:
+        if (!(std::isalnum(c) || c == '.' || c == '_')) {
+          source.putback(c);
+          return token;
+        }
+        break;
+    }
+  }
 }
 
 PPToken
