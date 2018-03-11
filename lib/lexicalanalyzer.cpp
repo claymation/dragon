@@ -3,6 +3,8 @@
 
 #include "lexicalanalyzer.h"
 
+#include <cassert>
+
 namespace dragon {
 
 LexicalAnalyzer::LexicalAnalyzer(Stream& in)
@@ -81,14 +83,6 @@ LexicalAnalyzer::getToken()
     case '9':
       return getPPNumber(c);
 
-    case '.':
-      c = source.get();
-      if (std::isdigit(c)) {
-        source.putback(c);
-        return getPPNumber('.');
-      }
-      return getPunctuator('.');
-
     case '\'':
       return getCharacterConstant();
 
@@ -101,6 +95,7 @@ LexicalAnalyzer::getToken()
     case ')':
     case '{':
     case '}':
+    case '.':
     case '-':
     case '+':
     case '&':
@@ -189,9 +184,114 @@ LexicalAnalyzer::getStringLiteral()
 }
 
 PPToken
-LexicalAnalyzer::getPunctuator(int)
+LexicalAnalyzer::getPunctuator(int c)
 {
-  return { PPToken::Kind::Punctuator, "" };
+  PPToken token{ PPToken::Kind::Punctuator, "" };
+
+  token.value += static_cast<char>(c);
+
+  switch (c) {
+    case '[':
+    case ']':
+    case '(':
+    case ')':
+    case '{':
+    case '}':
+    case '~':
+    case '?':
+    case ':':
+    case ';':
+    case ',':
+      // simple punctuators
+      return token;
+
+    default:
+      break;
+  }
+
+  int next = source.get();
+
+  switch (c) {
+    case '.':
+      if (std::isdigit(next)) {
+        source.putback(next);
+        return getPPNumber('.');
+      }
+      if (next != '.') {
+        source.putback(next);
+        break;
+      }
+      next = source.get();
+      if (next != '.') {
+        source.putback(next);
+        source.putback('.');
+        break;
+      }
+      token.value = "...";
+      break;
+
+    case '-':
+      if (next == '>') {
+        token.value += static_cast<char>(next);
+        break;
+      }
+      if (next == c || next == '=') {
+        token.value += static_cast<char>(next);
+      } else {
+        source.putback(next);
+      }
+      break;
+
+    case '+':
+    case '&':
+    case '|':
+      if (next == c || next == '=') {
+        token.value += static_cast<char>(next);
+      } else {
+        source.putback(next);
+      }
+      break;
+
+    case '*':
+    case '!':
+    case '/':
+    case '%':
+    case '=':
+    case '^':
+      if (next == '=') {
+        token.value += static_cast<char>(next);
+      } else {
+        source.putback(next);
+      }
+      break;
+
+    case '<':
+    case '>':
+      if (next == c) {
+        token.value += static_cast<char>(next);
+        next = source.get();
+      }
+      if (next == '=') {
+        token.value += static_cast<char>(next);
+      } else {
+        source.putback(next);
+      }
+      break;
+
+    case '#':
+      if (next == c) {
+        token.value += static_cast<char>(next);
+      } else {
+        source.putback(next);
+      }
+      break;
+
+    default:
+      // can't happen
+      assert(false);
+  }
+
+  return token;
 }
 
 } // namespace dragon

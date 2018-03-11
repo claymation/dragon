@@ -8,6 +8,8 @@
 #include "token.h"
 
 #include <sstream>
+#include <string>
+#include <vector>
 
 using namespace dragon;
 
@@ -40,4 +42,29 @@ TEST_CASE("tokenize preprocessing numbers (§6.4.8)", "[lexicalanalyzer]")
 
   REQUIRE(token.kind == PPToken::Kind::PPNumber);
   REQUIRE(token.value == "6.02E23");
+}
+
+TEST_CASE("tokenize punctuators (§6.4.6)", "[lexicalanalyzer]")
+{
+  std::stringstream ss;
+  std::vector<std::string> punc{
+    "[",  "]",  "(",  ")",  "{",   "}",   ".",  "->", "++", "--",  "&",  "*",
+    "+",  "-",  "~",  "!",  "/",   "%",   "<<", ">>", "<",  ">",   "<=", ">=",
+    "==", "!=", "^",  "|",  "&&",  "||",  "?",  ":",  ";",  "...", "=",  "*=",
+    "/=", "%=", "+=", "-=", "<<=", ">>=", "&=", "^=", "|=", "#",   ",",  "##",
+  };
+
+  for (auto s : punc) {
+    ss << s;
+  }
+
+  IOStream ios(ss);
+  LexicalAnalyzer lex(ios);
+
+  for (auto s : punc) {
+    PPToken token = lex.getToken();
+
+    REQUIRE(token.kind == PPToken::Kind::Punctuator);
+    REQUIRE(token.value == s);
+  }
 }
