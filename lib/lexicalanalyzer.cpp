@@ -196,7 +196,23 @@ LexicalAnalyzer::getCharacterConstant()
 PPToken
 LexicalAnalyzer::getStringLiteral()
 {
-  return { PPToken::Kind::StringLiteral, "" };
+  PPToken token{ PPToken::Kind::StringLiteral, "" };
+
+  while (true) {
+    int c = source.get();
+
+    if (c == '\n' || c == EOF) {
+      return { PPToken::Kind::Invalid, "" };
+    }
+
+    if (c == '"') {
+      break;
+    }
+
+    token.value += static_cast<char>(c);
+  }
+
+  return token;
 }
 
 PPToken

@@ -79,3 +79,14 @@ TEST_CASE("tokenize character constants (§6.4.4.4)", "[lexicalanalyzer]")
   REQUIRE(token.kind == PPToken::Kind::CharacterConstant);
   REQUIRE(token.value == "a");
 }
+
+TEST_CASE("tokenize string literals (§6.4.5)", "[lexicalanalyzer]")
+{
+  std::stringstream ss("\"foo\"");
+  IOStream ios(ss);
+  LexicalAnalyzer lex(ios);
+  PPToken token = lex.getToken();
+
+  REQUIRE(token.kind == PPToken::Kind::StringLiteral);
+  REQUIRE(token.value == "foo");
+}
