@@ -68,3 +68,14 @@ TEST_CASE("tokenize punctuators (§6.4.6)", "[lexicalanalyzer]")
     REQUIRE(token.value == s);
   }
 }
+
+TEST_CASE("tokenize character constants (§6.4.4.4)", "[lexicalanalyzer]")
+{
+  std::stringstream ss("'a'");
+  IOStream ios(ss);
+  LexicalAnalyzer lex(ios);
+  PPToken token = lex.getToken();
+
+  REQUIRE(token.kind == PPToken::Kind::CharacterConstant);
+  REQUIRE(token.value == "a");
+}
