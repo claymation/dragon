@@ -123,7 +123,7 @@ LexicalAnalyzer::getToken()
       return { PPToken::Kind::End, "" };
 
     default:
-      return { PPToken::Kind::Invalid, "" };
+      return { PPToken::Kind::Invalid, { static_cast<char>(c) } };
   }
 }
 
@@ -180,7 +180,7 @@ LexicalAnalyzer::getCharacterConstant()
     int c = source.get();
 
     if (c == '\n' || c == EOF) {
-      return { PPToken::Kind::Invalid, "" };
+      return { PPToken::Kind::Invalid, { static_cast<char>(c) } };
     }
 
     if (c == '\'') {
@@ -202,7 +202,7 @@ LexicalAnalyzer::getStringLiteral()
     int c = source.get();
 
     if (c == '\n' || c == EOF) {
-      return { PPToken::Kind::Invalid, "" };
+      return { PPToken::Kind::Invalid, { static_cast<char>(c) } };
     }
 
     if (c == '"') {

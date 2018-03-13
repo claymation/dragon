@@ -5,6 +5,7 @@
 
 #include "iostream.h"
 #include "preprocessor.h"
+#include "token.h"
 
 #include <sstream>
 #include <string>
@@ -15,17 +16,17 @@ using namespace dragon;
 TEST_CASE("trigraph sequences are replaced (§5.2.1.1)", "[preprocessor]")
 {
   // Escape trigraphs here to prevent replacement during compilation.
-  std::unordered_map<std::string, char> trigraphs{
-    { "\?\?=", '#' },  { "\?\?)", ']' }, { "\?\?!", '|' },
-    { "\?\?(", '[' },  { "\?\?'", '^' }, { "\?\?>", '}' },
-    { "\?\?/", '\\' }, { "\?\?<", '{' }, { "\?\?-", '~' },
+  std::unordered_map<std::string, std::string> trigraphs{
+    { "\?\?=", "#" },  { "\?\?)", "]" }, { "\?\?!", "|" },
+    { "\?\?(", "[" },  { "\?\?'", "^" }, { "\?\?>", "}" },
+    { "\?\?/", "\\" }, { "\?\?<", "{" }, { "\?\?-", "~" },
   };
 
   for (auto it : trigraphs) {
     std::stringstream ss(it.first);
     IOStream ios(ss);
-
-    REQUIRE(PreProcessor(ios).getToken() == it.second);
+    auto token = PreProcessor(ios).getToken();
+    REQUIRE(token.value == it.second);
   }
 }
 
@@ -36,18 +37,17 @@ TEST_CASE("non-trigraph sequences are not replaced (§5.2.1.1)",
   IOStream ios(ss);
   PreProcessor pp(ios);
 
-  REQUIRE(pp.getToken() == '?');
-  REQUIRE(pp.getToken() == '?');
-  REQUIRE(pp.getToken() == '?');
+  REQUIRE(pp.getToken().value == "?");
+  REQUIRE(pp.getToken().value == "?");
+  REQUIRE(pp.getToken().value == "?");
 }
 
 TEST_CASE("backslash immediately followed by new-line is deleted (§5.1.1.2)",
           "[preprocessor]")
 {
-  std::stringstream ss("a\\\nb");
+  std::stringstream ss("foo\\\nbar");
   IOStream ios(ss);
   PreProcessor pp(ios);
 
-  REQUIRE(pp.getToken() == 'a');
-  REQUIRE(pp.getToken() == 'b');
+  REQUIRE(pp.getToken().value == "foobar");
 }

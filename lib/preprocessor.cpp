@@ -8,13 +8,13 @@ namespace dragon {
 PreProcessor::PreProcessor(Stream& in)
   : trigraph_filter(in)
   , continued_line_filter(trigraph_filter)
-  , source(continued_line_filter)
+  , lexer(continued_line_filter)
 {}
 
-int
+PPToken
 PreProcessor::getToken()
 {
-  return source.get();
+  return lexer.getToken();
 }
 
 PreProcessor::TrigraphFilter::TrigraphFilter(Stream& in)

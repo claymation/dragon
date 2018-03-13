@@ -4,8 +4,10 @@
 #ifndef dragon_preprocessor_h
 #define dragon_preprocessor_h
 
+#include "lexicalanalyzer.h"
 #include "stream.h"
 #include "streamfilter.h"
+#include "token.h"
 
 namespace dragon {
 
@@ -35,7 +37,7 @@ public:
   /**
    * @brief Get the next parser token from the source stream.
    */
-  int getToken();
+  PPToken getToken();
 
 private:
   class TrigraphFilter : public StreamFilter
@@ -56,7 +58,7 @@ private:
 
   TrigraphFilter trigraph_filter;
   ContinuedLineFilter continued_line_filter;
-  Stream& source;
+  LexicalAnalyzer lexer;
 };
 
 } // namespace dragon
